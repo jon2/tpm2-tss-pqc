@@ -107,6 +107,7 @@ TESTS_UNIT  = \
     test/unit/TPML-marshal \
     test/unit/TPMT-marshal \
     test/unit/TPMU-marshal \
+    test/unit/TPMS-PQC-marshal \
     test/unit/sys-execute \
     test/unit/dlopen_tss2_rc \
     test/unit/tss2_rc
@@ -324,7 +325,10 @@ ESYS_TESTS_INTEGRATION_OPTIONAL = \
     test/integration/esys-policy-template-opt.int \
     test/integration/esys-pp-commands.int \
     test/integration/esys-zgen-2phase.int \
-    test/integration/esys-auto-session-flags.int
+    test/integration/esys-auto-session-flags.int \
+    test/integration/esys-mlkem-encapsulate-decapsulate.int \
+    test/integration/esys-mldsa-sign-sequence.int \
+    test/integration/esys-mldsa-sign-digest.int
 
 if TESTDEVICE
 
@@ -762,6 +766,11 @@ test_unit_TPMT_marshal_SOURCES = test/unit/TPMT-marshal.c \
 test_unit_TPMU_marshal_CFLAGS  = $(CMOCKA_CFLAGS) $(TESTS_CFLAGS)
 test_unit_TPMU_marshal_LDADD   = $(CMOCKA_LIBS) $(libtss2_mu)
 test_unit_TPMU_marshal_SOURCES = test/unit/TPMU-marshal.c \
+    test/helper/cmocka_all.h
+
+test_unit_TPMS_PQC_marshal_CFLAGS  = $(CMOCKA_CFLAGS) $(TESTS_CFLAGS)
+test_unit_TPMS_PQC_marshal_LDADD   = $(CMOCKA_LIBS) $(libtss2_mu)
+test_unit_TPMS_PQC_marshal_SOURCES = test/unit/TPMS-PQC-marshal.c \
     test/helper/cmocka_all.h
 
 test_unit_sys_execute_CFLAGS  = $(CMOCKA_CFLAGS) $(TESTS_CFLAGS)
@@ -2070,6 +2079,27 @@ test_integration_esys_ecc_encrypt_decrypt_int_LDFLAGS = $(TESTS_LDFLAGS) $(TSS2_
 test_integration_esys_ecc_encrypt_decrypt_int_SOURCES = \
     $(ESYS_SRC_UTIL_CRYPTO_SRC) \
     test/integration/esys-ecc-encrypt-decrypt.int.c \
+    test/integration/main-esys.c test/integration/test-esys.h
+
+test_integration_esys_mlkem_encapsulate_decapsulate_int_CFLAGS  = $(TESTS_CFLAGS)
+test_integration_esys_mlkem_encapsulate_decapsulate_int_LDADD   = $(TESTS_LDADD)
+test_integration_esys_mlkem_encapsulate_decapsulate_int_LDFLAGS = $(TESTS_LDFLAGS)
+test_integration_esys_mlkem_encapsulate_decapsulate_int_SOURCES = \
+    test/integration/esys-mlkem-encapsulate-decapsulate.int.c \
+    test/integration/main-esys.c test/integration/test-esys.h
+
+test_integration_esys_mldsa_sign_sequence_int_CFLAGS  = $(TESTS_CFLAGS)
+test_integration_esys_mldsa_sign_sequence_int_LDADD   = $(TESTS_LDADD)
+test_integration_esys_mldsa_sign_sequence_int_LDFLAGS = $(TESTS_LDFLAGS)
+test_integration_esys_mldsa_sign_sequence_int_SOURCES = \
+    test/integration/esys-mldsa-sign-sequence.int.c \
+    test/integration/main-esys.c test/integration/test-esys.h
+
+test_integration_esys_mldsa_sign_digest_int_CFLAGS  = $(TESTS_CFLAGS)
+test_integration_esys_mldsa_sign_digest_int_LDADD   = $(TESTS_LDADD)
+test_integration_esys_mldsa_sign_digest_int_LDFLAGS = $(TESTS_LDFLAGS)
+test_integration_esys_mldsa_sign_digest_int_SOURCES = \
+    test/integration/esys-mldsa-sign-digest.int.c \
     test/integration/main-esys.c test/integration/test-esys.h
 
 endif #ESYS

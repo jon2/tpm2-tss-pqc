@@ -3393,6 +3393,196 @@ Esys_ECC_Decrypt_Finish(ESYS_CONTEXT *esysContext, TPM2B_MAX_BUFFER **plainText)
 TSS2_RC
 Esys_Abort(ESYS_CONTEXT *esysContext);
 
+/* V185: PQC ESAPI Command Declarations */
+
+/* Encapsulate */
+TSS2_RC
+Esys_Encapsulate(ESYS_CONTEXT            *esysContext,
+                 ESYS_TR                  keyHandle,
+                 ESYS_TR                  shandle1,
+                 ESYS_TR                  shandle2,
+                 ESYS_TR                  shandle3,
+                 const TPM2B_DATA        *label,
+                 TPM2B_DATA             **outSymSeed,
+                 TPM2B_ENCRYPTED_SECRET **cipherText);
+
+TSS2_RC
+Esys_Encapsulate_Async(ESYS_CONTEXT     *esysContext,
+                       ESYS_TR           keyHandle,
+                       ESYS_TR           shandle1,
+                       ESYS_TR           shandle2,
+                       ESYS_TR           shandle3,
+                       const TPM2B_DATA *label);
+
+TSS2_RC
+Esys_Encapsulate_Finish(ESYS_CONTEXT            *esysContext,
+                        TPM2B_DATA             **outSymSeed,
+                        TPM2B_ENCRYPTED_SECRET **cipherText);
+
+/* Decapsulate */
+TSS2_RC
+Esys_Decapsulate(ESYS_CONTEXT                  *esysContext,
+                 ESYS_TR                        keyHandle,
+                 ESYS_TR                        shandle1,
+                 ESYS_TR                        shandle2,
+                 ESYS_TR                        shandle3,
+                 const TPM2B_ENCRYPTED_SECRET  *cipherText,
+                 const TPM2B_DATA              *label,
+                 TPM2B_DATA                   **outSymSeed);
+
+TSS2_RC
+Esys_Decapsulate_Async(ESYS_CONTEXT                 *esysContext,
+                       ESYS_TR                       keyHandle,
+                       ESYS_TR                       shandle1,
+                       ESYS_TR                       shandle2,
+                       ESYS_TR                       shandle3,
+                       const TPM2B_ENCRYPTED_SECRET *cipherText,
+                       const TPM2B_DATA             *label);
+
+TSS2_RC
+Esys_Decapsulate_Finish(ESYS_CONTEXT *esysContext,
+                        TPM2B_DATA  **outSymSeed);
+
+/* SignSequenceStart */
+TSS2_RC
+Esys_SignSequenceStart(ESYS_CONTEXT          *esysContext,
+                       ESYS_TR                keyHandle,
+                       ESYS_TR                shandle1,
+                       ESYS_TR                shandle2,
+                       ESYS_TR                shandle3,
+                       const TPMT_SIG_SCHEME *inScheme,
+                       ESYS_TR                keyB,
+                       ESYS_TR               *sequenceHandle);
+
+TSS2_RC
+Esys_SignSequenceStart_Async(ESYS_CONTEXT          *esysContext,
+                             ESYS_TR                keyHandle,
+                             ESYS_TR                shandle1,
+                             ESYS_TR                shandle2,
+                             ESYS_TR                shandle3,
+                             const TPMT_SIG_SCHEME *inScheme,
+                             ESYS_TR                keyB);
+
+TSS2_RC
+Esys_SignSequenceStart_Finish(ESYS_CONTEXT *esysContext,
+                              ESYS_TR      *sequenceHandle);
+
+/* SignSequenceComplete */
+TSS2_RC
+Esys_SignSequenceComplete(ESYS_CONTEXT           *esysContext,
+                          ESYS_TR                 sequenceHandle,
+                          ESYS_TR                 shandle1,
+                          ESYS_TR                 shandle2,
+                          ESYS_TR                 shandle3,
+                          const TPM2B_MAX_BUFFER *buffer,
+                          TPMT_SIGNATURE        **signature);
+
+TSS2_RC
+Esys_SignSequenceComplete_Async(ESYS_CONTEXT           *esysContext,
+                                ESYS_TR                 sequenceHandle,
+                                ESYS_TR                 shandle1,
+                                ESYS_TR                 shandle2,
+                                ESYS_TR                 shandle3,
+                                const TPM2B_MAX_BUFFER *buffer);
+
+TSS2_RC
+Esys_SignSequenceComplete_Finish(ESYS_CONTEXT   *esysContext,
+                                 TPMT_SIGNATURE **signature);
+
+/* VerifySequenceStart */
+TSS2_RC
+Esys_VerifySequenceStart(ESYS_CONTEXT          *esysContext,
+                         ESYS_TR                keyHandle,
+                         ESYS_TR                shandle1,
+                         ESYS_TR                shandle2,
+                         ESYS_TR                shandle3,
+                         const TPMT_SIGNATURE  *signature,
+                         ESYS_TR               *sequenceHandle);
+
+TSS2_RC
+Esys_VerifySequenceStart_Async(ESYS_CONTEXT         *esysContext,
+                               ESYS_TR               keyHandle,
+                               ESYS_TR               shandle1,
+                               ESYS_TR               shandle2,
+                               ESYS_TR               shandle3,
+                               const TPMT_SIGNATURE *signature);
+
+TSS2_RC
+Esys_VerifySequenceStart_Finish(ESYS_CONTEXT *esysContext,
+                                ESYS_TR      *sequenceHandle);
+
+/* VerifySequenceComplete */
+TSS2_RC
+Esys_VerifySequenceComplete(ESYS_CONTEXT           *esysContext,
+                            ESYS_TR                 sequenceHandle,
+                            ESYS_TR                 shandle1,
+                            ESYS_TR                 shandle2,
+                            ESYS_TR                 shandle3,
+                            const TPM2B_MAX_BUFFER *buffer,
+                            TPMT_TK_VERIFIED      **validation);
+
+TSS2_RC
+Esys_VerifySequenceComplete_Async(ESYS_CONTEXT           *esysContext,
+                                  ESYS_TR                 sequenceHandle,
+                                  ESYS_TR                 shandle1,
+                                  ESYS_TR                 shandle2,
+                                  ESYS_TR                 shandle3,
+                                  const TPM2B_MAX_BUFFER *buffer);
+
+TSS2_RC
+Esys_VerifySequenceComplete_Finish(ESYS_CONTEXT     *esysContext,
+                                   TPMT_TK_VERIFIED **validation);
+
+/* SignDigest */
+TSS2_RC
+Esys_SignDigest(ESYS_CONTEXT              *esysContext,
+                ESYS_TR                    keyHandle,
+                ESYS_TR                    shandle1,
+                ESYS_TR                    shandle2,
+                ESYS_TR                    shandle3,
+                const TPM2B_DIGEST        *digest,
+                const TPMT_SIG_SCHEME     *inScheme,
+                const TPMT_TK_HASHCHECK   *validation,
+                TPMT_SIGNATURE           **signature);
+
+TSS2_RC
+Esys_SignDigest_Async(ESYS_CONTEXT            *esysContext,
+                      ESYS_TR                  keyHandle,
+                      ESYS_TR                  shandle1,
+                      ESYS_TR                  shandle2,
+                      ESYS_TR                  shandle3,
+                      const TPM2B_DIGEST      *digest,
+                      const TPMT_SIG_SCHEME   *inScheme,
+                      const TPMT_TK_HASHCHECK *validation);
+
+TSS2_RC
+Esys_SignDigest_Finish(ESYS_CONTEXT   *esysContext,
+                       TPMT_SIGNATURE **signature);
+
+/* VerifyDigestSignature */
+TSS2_RC
+Esys_VerifyDigestSignature(ESYS_CONTEXT         *esysContext,
+                           ESYS_TR               keyHandle,
+                           ESYS_TR               shandle1,
+                           ESYS_TR               shandle2,
+                           ESYS_TR               shandle3,
+                           const TPM2B_DIGEST   *digest,
+                           const TPMT_SIGNATURE *signature,
+                           TPMT_TK_VERIFIED    **validation);
+
+TSS2_RC
+Esys_VerifyDigestSignature_Async(ESYS_CONTEXT         *esysContext,
+                                 ESYS_TR               keyHandle,
+                                 ESYS_TR               shandle1,
+                                 ESYS_TR               shandle2,
+                                 ESYS_TR               shandle3,
+                                 const TPM2B_DIGEST   *digest,
+                                 const TPMT_SIGNATURE *signature);
+
+TSS2_RC
+Esys_VerifyDigestSignature_Finish(ESYS_CONTEXT     *esysContext,
+                                  TPMT_TK_VERIFIED **validation);
+
 #ifdef __cplusplus
 }
 #endif

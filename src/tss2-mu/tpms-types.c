@@ -1434,6 +1434,59 @@ TPMS_UNMARSHAL_4(TPMS_ECC_PARMS,
                  kdf,
                  Tss2_MU_TPMT_KDF_SCHEME_Unmarshal)
 
+/* V185: PQC Structure Marshaling */
+
+TPMS_MARSHAL_1(TPMS_ML_PARAMETER_SET,
+               identifier,
+               VAL,
+               Tss2_MU_UINT32_Marshal)
+
+TPMS_UNMARSHAL_1(TPMS_ML_PARAMETER_SET,
+                 identifier,
+                 Tss2_MU_UINT32_Unmarshal)
+
+TPMS_MARSHAL_2(TPMS_MLKEM_PARMS,
+               nameAlg,
+               VAL,
+               Tss2_MU_UINT16_Marshal,
+               parameterSet,
+               ADDR,
+               Tss2_MU_TPMS_ML_PARAMETER_SET_Marshal)
+
+TPMS_UNMARSHAL_2(TPMS_MLKEM_PARMS,
+                 nameAlg,
+                 Tss2_MU_UINT16_Unmarshal,
+                 parameterSet,
+                 Tss2_MU_TPMS_ML_PARAMETER_SET_Unmarshal)
+
+TPMS_MARSHAL_2(TPMS_MLDSA_PARMS,
+               nameAlg,
+               VAL,
+               Tss2_MU_UINT16_Marshal,
+               parameterSet,
+               ADDR,
+               Tss2_MU_TPMS_ML_PARAMETER_SET_Marshal)
+
+TPMS_UNMARSHAL_2(TPMS_MLDSA_PARMS,
+                 nameAlg,
+                 Tss2_MU_UINT16_Unmarshal,
+                 parameterSet,
+                 Tss2_MU_TPMS_ML_PARAMETER_SET_Unmarshal)
+
+TPMS_MARSHAL_2(TPMS_SIGNATURE_MLDSA,
+               hash,
+               VAL,
+               Tss2_MU_UINT16_Marshal,
+               sig,
+               ADDR,
+               Tss2_MU_TPM2B_MLDSA_SIGNATURE_Marshal)
+
+TPMS_UNMARSHAL_2(TPMS_SIGNATURE_MLDSA,
+                 hash,
+                 Tss2_MU_UINT16_Unmarshal,
+                 sig,
+                 Tss2_MU_TPM2B_MLDSA_SIGNATURE_Unmarshal)
+
 TPMS_MARSHAL_7_U(TPMS_ATTEST,
                  magic,
                  VAL,

@@ -1926,6 +1926,140 @@ TSS2_RC Tss2_Sys_ECC_Decrypt(TSS2_SYS_CONTEXT             *sysContext,
 
 TSS2_RC Tss2_Sys_Abort(TSS2_SYS_CONTEXT *sysContext);
 
+/* V185: PQC Command Declarations */
+
+/* Encapsulate */
+TSS2_RC Tss2_Sys_Encapsulate_Prepare(TSS2_SYS_CONTEXT *sysContext,
+                                     TPMI_DH_OBJECT    keyHandle,
+                                     TPM2B_DATA const *label);
+
+TSS2_RC Tss2_Sys_Encapsulate_Complete(TSS2_SYS_CONTEXT      *sysContext,
+                                      TPM2B_DATA             *outSymSeed,
+                                      TPM2B_ENCRYPTED_SECRET *cipherText);
+
+TSS2_RC Tss2_Sys_Encapsulate(TSS2_SYS_CONTEXT             *sysContext,
+                              TPMI_DH_OBJECT                keyHandle,
+                              TSS2L_SYS_AUTH_COMMAND const *cmdAuthsArray,
+                              TPM2B_DATA const             *label,
+                              TPM2B_DATA                   *outSymSeed,
+                              TPM2B_ENCRYPTED_SECRET       *cipherText,
+                              TSS2L_SYS_AUTH_RESPONSE      *rspAuthsArray);
+
+/* Decapsulate */
+TSS2_RC Tss2_Sys_Decapsulate_Prepare(TSS2_SYS_CONTEXT            *sysContext,
+                                     TPMI_DH_OBJECT               keyHandle,
+                                     TPM2B_ENCRYPTED_SECRET const *cipherText,
+                                     TPM2B_DATA const             *label);
+
+TSS2_RC Tss2_Sys_Decapsulate_Complete(TSS2_SYS_CONTEXT *sysContext,
+                                      TPM2B_DATA       *outSymSeed);
+
+TSS2_RC Tss2_Sys_Decapsulate(TSS2_SYS_CONTEXT             *sysContext,
+                              TPMI_DH_OBJECT                keyHandle,
+                              TSS2L_SYS_AUTH_COMMAND const *cmdAuthsArray,
+                              TPM2B_ENCRYPTED_SECRET const *cipherText,
+                              TPM2B_DATA const             *label,
+                              TPM2B_DATA                   *outSymSeed,
+                              TSS2L_SYS_AUTH_RESPONSE      *rspAuthsArray);
+
+/* SignSequenceStart */
+TSS2_RC Tss2_Sys_SignSequenceStart_Prepare(TSS2_SYS_CONTEXT      *sysContext,
+                                           TPMI_DH_OBJECT         keyHandle,
+                                           TPMT_SIG_SCHEME const *inScheme,
+                                           TPMI_DH_OBJECT         keyB);
+
+TSS2_RC Tss2_Sys_SignSequenceStart_Complete(TSS2_SYS_CONTEXT *sysContext,
+                                            TPMI_DH_OBJECT   *sequenceHandle);
+
+TSS2_RC Tss2_Sys_SignSequenceStart(TSS2_SYS_CONTEXT             *sysContext,
+                                    TPMI_DH_OBJECT                keyHandle,
+                                    TSS2L_SYS_AUTH_COMMAND const *cmdAuthsArray,
+                                    TPMT_SIG_SCHEME const        *inScheme,
+                                    TPMI_DH_OBJECT                keyB,
+                                    TPMI_DH_OBJECT               *sequenceHandle,
+                                    TSS2L_SYS_AUTH_RESPONSE      *rspAuthsArray);
+
+/* SignSequenceComplete */
+TSS2_RC Tss2_Sys_SignSequenceComplete_Prepare(TSS2_SYS_CONTEXT        *sysContext,
+                                              TPMI_DH_OBJECT           sequenceHandle,
+                                              TPM2B_MAX_BUFFER const  *buffer);
+
+TSS2_RC Tss2_Sys_SignSequenceComplete_Complete(TSS2_SYS_CONTEXT *sysContext,
+                                               TPMT_SIGNATURE   *signature);
+
+TSS2_RC Tss2_Sys_SignSequenceComplete(TSS2_SYS_CONTEXT             *sysContext,
+                                       TPMI_DH_OBJECT                sequenceHandle,
+                                       TSS2L_SYS_AUTH_COMMAND const *cmdAuthsArray,
+                                       TPM2B_MAX_BUFFER const       *buffer,
+                                       TPMT_SIGNATURE               *signature,
+                                       TSS2L_SYS_AUTH_RESPONSE      *rspAuthsArray);
+
+/* VerifySequenceStart */
+TSS2_RC Tss2_Sys_VerifySequenceStart_Prepare(TSS2_SYS_CONTEXT     *sysContext,
+                                              TPMI_DH_OBJECT        keyHandle,
+                                              TPMT_SIGNATURE const *signature);
+
+TSS2_RC Tss2_Sys_VerifySequenceStart_Complete(TSS2_SYS_CONTEXT *sysContext,
+                                               TPMI_DH_OBJECT   *sequenceHandle);
+
+TSS2_RC Tss2_Sys_VerifySequenceStart(TSS2_SYS_CONTEXT             *sysContext,
+                                      TPMI_DH_OBJECT                keyHandle,
+                                      TSS2L_SYS_AUTH_COMMAND const *cmdAuthsArray,
+                                      TPMT_SIGNATURE const         *signature,
+                                      TPMI_DH_OBJECT               *sequenceHandle,
+                                      TSS2L_SYS_AUTH_RESPONSE      *rspAuthsArray);
+
+/* VerifySequenceComplete */
+TSS2_RC Tss2_Sys_VerifySequenceComplete_Prepare(TSS2_SYS_CONTEXT       *sysContext,
+                                                 TPMI_DH_OBJECT          sequenceHandle,
+                                                 TPM2B_MAX_BUFFER const *buffer);
+
+TSS2_RC Tss2_Sys_VerifySequenceComplete_Complete(TSS2_SYS_CONTEXT *sysContext,
+                                                  TPMT_TK_VERIFIED *validation);
+
+TSS2_RC Tss2_Sys_VerifySequenceComplete(TSS2_SYS_CONTEXT             *sysContext,
+                                         TPMI_DH_OBJECT                sequenceHandle,
+                                         TSS2L_SYS_AUTH_COMMAND const *cmdAuthsArray,
+                                         TPM2B_MAX_BUFFER const       *buffer,
+                                         TPMT_TK_VERIFIED             *validation,
+                                         TSS2L_SYS_AUTH_RESPONSE      *rspAuthsArray);
+
+/* SignDigest */
+TSS2_RC Tss2_Sys_SignDigest_Prepare(TSS2_SYS_CONTEXT      *sysContext,
+                                    TPMI_DH_OBJECT          keyHandle,
+                                    TPM2B_DIGEST const     *digest,
+                                    TPMT_SIG_SCHEME const  *inScheme,
+                                    TPMT_TK_HASHCHECK const *validation);
+
+TSS2_RC Tss2_Sys_SignDigest_Complete(TSS2_SYS_CONTEXT *sysContext,
+                                     TPMT_SIGNATURE   *signature);
+
+TSS2_RC Tss2_Sys_SignDigest(TSS2_SYS_CONTEXT             *sysContext,
+                             TPMI_DH_OBJECT                keyHandle,
+                             TSS2L_SYS_AUTH_COMMAND const *cmdAuthsArray,
+                             TPM2B_DIGEST const           *digest,
+                             TPMT_SIG_SCHEME const        *inScheme,
+                             TPMT_TK_HASHCHECK const      *validation,
+                             TPMT_SIGNATURE               *signature,
+                             TSS2L_SYS_AUTH_RESPONSE      *rspAuthsArray);
+
+/* VerifyDigestSignature */
+TSS2_RC Tss2_Sys_VerifyDigestSignature_Prepare(TSS2_SYS_CONTEXT     *sysContext,
+                                                TPMI_DH_OBJECT        keyHandle,
+                                                TPM2B_DIGEST const   *digest,
+                                                TPMT_SIGNATURE const *signature);
+
+TSS2_RC Tss2_Sys_VerifyDigestSignature_Complete(TSS2_SYS_CONTEXT *sysContext,
+                                                 TPMT_TK_VERIFIED *validation);
+
+TSS2_RC Tss2_Sys_VerifyDigestSignature(TSS2_SYS_CONTEXT             *sysContext,
+                                        TPMI_DH_OBJECT                keyHandle,
+                                        TSS2L_SYS_AUTH_COMMAND const *cmdAuthsArray,
+                                        TPM2B_DIGEST const           *digest,
+                                        TPMT_SIGNATURE const         *signature,
+                                        TPMT_TK_VERIFIED             *validation,
+                                        TSS2L_SYS_AUTH_RESPONSE      *rspAuthsArray);
+
 #ifdef __cplusplus
 }
 #endif
