@@ -1,0 +1,36 @@
+{
+    "type": "mldsa",
+    "nameAlg":"sha512",
+    "srk_template": "system,restricted,decrypt,0x81000001",
+    "srk_description": "Storage root key SRK",
+    "ek_template":  "system,restricted,decrypt",
+    "ek_description": "Endorsement key EK",
+    "mldsa_signing_scheme": {
+        "scheme":"mldsa",
+        "details":{
+            "hashAlg":"hash_mldsa"
+        }
+    },
+    "sym_mode":"cfb",
+    "sym_parameters": {
+        "algorithm":"aes",
+        "keyBits":"256",
+        "mode":"cfb"
+    },
+    "sym_block_size": 16,
+    "pcr_selection": [
+       { "hash": "sha512",
+         "pcrSelect": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 ]
+       }
+    ],
+    "mldsaParameterSet": 64,
+    "ek_policy": {
+        "description": "Endorsement hierarchy used for policy secret.",
+        "policy":[
+            {
+                "type":"policysecret",
+                "objectName": "4000000b"
+            }
+        ]
+    }
+}
