@@ -2601,6 +2601,44 @@ struct TPMS_SIGNATURE_MLDSA {
     TPM2B_MLDSA_SIGNATURE sig;  /* the ML-DSA signature */
 };
 
+/* V185: Definition of TPMS_HASH_MLDSA_PARMS Structure
+ * Used for TPM2_ALG_HASH_MLDSA (hash-then-sign ML-DSA) */
+typedef struct TPMS_HASH_MLDSA_PARMS TPMS_HASH_MLDSA_PARMS;
+struct TPMS_HASH_MLDSA_PARMS {
+    TPMI_ALG_HASH         nameAlg;      /* hash algorithm */
+    TPMS_ML_PARAMETER_SET parameterSet; /* ML-DSA parameter set */
+};
+
+/* V185: ML-DSA Signature Context Types for hash-based signing */
+#define TPM2_MLDSA_CTX_MAX_SIZE          255
+#define TPM2_MAX_SIGNATURE_HINT_SIZE     TPM2_MAX_ECC_KEY_BYTES
+
+typedef union TPMU_SIGNATURE_CTX TPMU_SIGNATURE_CTX;
+union TPMU_SIGNATURE_CTX {
+    BYTE buffer[TPM2_MLDSA_CTX_MAX_SIZE];
+};
+
+typedef struct TPM2B_SIGNATURE_CTX TPM2B_SIGNATURE_CTX;
+struct TPM2B_SIGNATURE_CTX {
+    UINT16 size;
+    BYTE   buffer[sizeof(TPMU_SIGNATURE_CTX)];
+};
+
+typedef struct TPM2B_SIGNATURE_HINT TPM2B_SIGNATURE_HINT;
+struct TPM2B_SIGNATURE_HINT {
+    UINT16 size;
+    BYTE   buffer[TPM2_MAX_SIGNATURE_HINT_SIZE];
+};
+
+/* V185: ML-KEM Shared Secret Type */
+#define TPM2_MLKEM_SHARED_SECRET_SIZE    32
+
+typedef struct TPM2B_SHARED_SECRET TPM2B_SHARED_SECRET;
+struct TPM2B_SHARED_SECRET {
+    UINT16 size;
+    BYTE   buffer[TPM2_MLKEM_SHARED_SECRET_SIZE];
+};
+
 /* Definition of TPMU_SIGNATURE Union <INOUT S> */
 typedef union TPMU_SIGNATURE TPMU_SIGNATURE;
 union TPMU_SIGNATURE {
@@ -2725,9 +2763,10 @@ union TPMU_PUBLIC_PARMS {
     TPMS_SYMCIPHER_PARMS symDetail;       /* a symmetric block cipher */
     TPMS_RSA_PARMS       rsaDetail;       /* decrypt + sign2 */
     TPMS_ECC_PARMS       eccDetail;       /* decrypt + sign2 */
-    TPMS_MLKEM_PARMS     mlkemDetail;     /* V185: ML-KEM key encapsulation */
-    TPMS_MLDSA_PARMS     mldsaDetail;     /* V185: ML-DSA digital signature */
-    TPMS_ASYM_PARMS      asymDetail;      /* common scheme structure for RSA and ECC keys */
+    TPMS_MLKEM_PARMS      mlkemDetail;      /* V185: ML-KEM key encapsulation */
+    TPMS_MLDSA_PARMS      mldsaDetail;      /* V185: ML-DSA digital signature */
+    TPMS_HASH_MLDSA_PARMS hashMldsaDetail;  /* V185: Hash-then-sign ML-DSA */
+    TPMS_ASYM_PARMS       asymDetail;       /* common scheme structure for RSA and ECC keys */
 };
 
 /* Definition of TPMT_PUBLIC_PARMS Structure */
