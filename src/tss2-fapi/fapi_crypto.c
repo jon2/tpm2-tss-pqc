@@ -660,6 +660,10 @@ ifapi_pub_pem_key_from_tpm(const TPM2B_PUBLIC *tpmPublicKey, char **pemKey, int 
         r = ossl_rsa_pub_from_tpm(tpmPublicKey, &evpPublicKey);
     } else if (tpmPublicKey->publicArea.type == TPM2_ALG_ECC) {
         r = ossl_ecc_pub_from_tpm(tpmPublicKey, &evpPublicKey);
+    } else if (tpmPublicKey->publicArea.type == TPM2_ALG_MLDSA ||
+               tpmPublicKey->publicArea.type == TPM2_ALG_MLKEM) {
+        goto_error(r, TSS2_FAPI_RC_NOT_IMPLEMENTED,
+                   "PEM conversion for PQ keys not yet supported.", cleanup);
     } else {
         goto_error(r, TSS2_FAPI_RC_BAD_VALUE, "Invalid alg id.", cleanup);
     }
@@ -816,6 +820,14 @@ ifapi_der_sig_to_tpm(const TPMT_PUBLIC   *tpmPublic,
     } else if (tpmPublic->type == TPM2_ALG_KEYEDHASH) {
         return ifapi_hmac_sig_to_tpm(signature, signatureSize, hashAlgorithm, tpmSignature);
 
+    } else if (tpmPublic->type == TPM2_ALG_MLDSA) {
+        tpmSignature->sigAlg = TPM2_ALG_MLDSA;
+        tpmSignature->signature.mldsa.hash = hashAlgorithm;
+        if (signatureSize > TPM2_MAX_MLDSA_SIGNATURE_SIZE) {
+            return_error(TSS2_FAPI_RC_BAD_VALUE, "ML-DSA signature too large.");
+        }
+        tpmSignature->signature.mldsa.sig.size = signatureSize;
+        memcpy(&tpmSignature->signature.mldsa.sig.buffer[0], signature, signatureSize);
     } else {
         return_error(TSS2_FAPI_RC_BAD_VALUE, "Invalid key tpye.");
     }
@@ -1267,7 +1279,9 @@ ifapi_get_tpm2b_public_from_pem(const char *pemKey, TPM2B_PUBLIC *tpmPublic) {
         r = get_ecc_tpm2b_public_from_evp(publicKey, tpmPublic);
         goto_if_error(r, "Get public for ECC key.", cleanup);
     } else {
-        goto_error(r, TSS2_FAPI_RC_BAD_VALUE, "Wrong key_type", cleanup);
+        /* PQ key types (ML-DSA, ML-KEM) are not yet supported for PEM import */
+        goto_error(r, TSS2_FAPI_RC_NOT_IMPLEMENTED,
+                   "PEM import for this key type not yet supported.", cleanup);
     }
 cleanup:
     OSSL_FREE(publicKey, EVP_PKEY);
@@ -1738,7 +1752,8 @@ ifapi_cert_to_pem(const uint8_t *certBuffer,
         r = get_ecc_tpm2b_public_from_evp(publicKey, tpmPublic);
         goto_if_error(r, "Get public for ECC key.", cleanup);
     } else {
-        goto_error(r, TSS2_FAPI_RC_BAD_VALUE, "Wrong key_type", cleanup);
+        goto_error(r, TSS2_FAPI_RC_NOT_IMPLEMENTED,
+                   "Certificate key type not yet supported.", cleanup);
     }
 
     if (certAlgorithmId != NULL) {
@@ -1853,7 +1868,8 @@ ifapi_get_public_from_pem_cert(const char *pem_cert, TPM2B_PUBLIC *tpm_public) {
         r = get_ecc_tpm2b_public_from_evp(public_key, tpm_public);
         goto_if_error(r, "Get public for ECC key.", cleanup);
     } else {
-        goto_error(r, TSS2_FAPI_RC_BAD_VALUE, "Wrong key_type", cleanup);
+        goto_error(r, TSS2_FAPI_RC_NOT_IMPLEMENTED,
+                   "Certificate key type not yet supported.", cleanup);
     }
 cleanup:
     OSSL_FREE(cert, X509);
@@ -1899,6 +1915,10 @@ ifapi_get_tpm_key_fingerprint(const TPM2B_PUBLIC *tpmPublicKey,
         r = ossl_rsa_pub_from_tpm(tpmPublicKey, &evpPublicKey);
     } else if (tpmPublicKey->publicArea.type == TPM2_ALG_ECC) {
         r = ossl_ecc_pub_from_tpm(tpmPublicKey, &evpPublicKey);
+    } else if (tpmPublicKey->publicArea.type == TPM2_ALG_MLDSA ||
+               tpmPublicKey->publicArea.type == TPM2_ALG_MLKEM) {
+        goto_error(r, TSS2_FAPI_RC_NOT_IMPLEMENTED,
+                   "PQ key verification via OpenSSL not yet supported.", cleanup);
     } else {
         goto_error(r, TSS2_FAPI_RC_BAD_VALUE, "Invalid alg id.", cleanup);
     }
@@ -2251,6 +2271,12 @@ ifapi_openssl_load_private(const char *pem_key,
         break;
     case TPM2_ALG_ECC:
         rc = load_ECC_key(key, pub, priv);
+        break;
+    case TPM2_ALG_MLDSA:
+    case TPM2_ALG_MLKEM:
+        LOG_ERROR("PEM key loading for PQ algorithms not yet supported, got: 0x%x",
+                  template->publicArea.type);
+        rc = TSS2_FAPI_RC_NOT_IMPLEMENTED;
         break;
     default:
         LOG_ERROR("Cannot handle algorithm, got: 0x%x", template->publicArea.type);

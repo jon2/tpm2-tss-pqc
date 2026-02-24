@@ -422,6 +422,13 @@ iesys_compute_encrypted_salt(ESYS_CONTEXT           *esys_context,
         return_if_error(r, "During KDFe computation.");
         esys_context->salt.size = keyHash_size;
         break;
+    case TPM2_ALG_MLKEM:
+        /* V185: ML-KEM key encapsulation for session salt.
+         * Not yet implemented — requires OpenSSL 3.5+ or OQS provider for
+         * ML-KEM encapsulation support. For now, return NOT_IMPLEMENTED. */
+        LOG_ERROR("ML-KEM session salt encryption not yet implemented.");
+        return TSS2_ESYS_RC_NOT_IMPLEMENTED;
+        break;
     default:
         LOG_ERROR("Not implemented");
         return TSS2_ESYS_RC_GENERAL_FAILURE;

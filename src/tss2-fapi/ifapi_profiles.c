@@ -375,6 +375,13 @@ ifapi_profile_json_deserialize(json_object *jso, IFAPI_PROFILE *out) {
         return_if_error(r, "Bad value for field \"rsa_signing_scheme\".");
     }
 
+    if (!ifapi_get_sub_object(jso, "mldsa_signing_scheme", &jso2)) {
+        memset(&out->mldsa_signing_scheme, 0, sizeof(TPMT_SIG_SCHEME));
+    } else {
+        r = ifapi_json_TPMT_SIG_SCHEME_deserialize(jso2, &out->mldsa_signing_scheme);
+        return_if_error(r, "Bad value for field \"mldsa_signing_scheme\".");
+    }
+
     if (!ifapi_get_sub_object(jso, "rsa_decrypt_scheme", &jso2)) {
         memset(&out->rsa_decrypt_scheme, 0, sizeof(TPMT_RSA_DECRYPT));
     } else {
@@ -438,6 +445,14 @@ ifapi_profile_json_deserialize(json_object *jso, IFAPI_PROFILE *out) {
         }
         r = ifapi_json_TPMI_ECC_CURVE_deserialize(jso2, &out->curveID);
         return_if_error(r, "Bad value for field \"curveID\".");
+    } else if (out->type == TPM2_ALG_MLDSA) {
+        if (ifapi_get_sub_object(jso, "mldsaParameterSet", &jso2)) {
+            r = ifapi_json_UINT32_deserialize(jso2, &out->mldsaParameterSet.identifier);
+            return_if_error(r, "Bad value for field \"mldsaParameterSet\".");
+        } else {
+            /* Default to ML-DSA-87 */
+            out->mldsaParameterSet.identifier = TPMA_ML_PARAMETER_SET_MLDSA_87;
+        }
     }
 
     if (!ifapi_get_sub_object(jso, "session_symmetric", &jso2)) {

@@ -1696,6 +1696,13 @@ ifapi_tpm_to_fapi_signature(IFAPI_OBJECT   *sig_key_object,
         /* For ECC signatures the TPM signaute has to be converted to DER. */
         r = ifapi_tpm_ecc_sig_to_der(tpm_signature, signature, signatureSize);
         goto_if_error(r, "Conversion to DER failed", error_cleanup);
+    } else if (sig_key_object->misc.key.public.publicArea.type == TPM2_ALG_MLDSA) {
+        /* ML-DSA signatures are raw byte arrays, no format conversion needed. */
+        *signatureSize = tpm_signature->signature.mldsa.sig.size;
+        *signature = malloc(*signatureSize);
+        goto_if_null(*signature, "Out of memory.", TSS2_FAPI_RC_MEMORY, error_cleanup);
+
+        memcpy(*signature, &tpm_signature->signature.mldsa.sig.buffer[0], *signatureSize);
     } else {
         goto_error(r, TSS2_FAPI_RC_BAD_VALUE, "Unknown signature scheme", error_cleanup);
     }
@@ -2523,6 +2530,31 @@ ifapi_cmp_public_key(TPM2B_PUBLIC *key1, TPM2B_PUBLIC *key2) {
                       "Key 2 x");
         if (memcmp(&key1->publicArea.unique.ecc.y.buffer[0],
                    &key2->publicArea.unique.ecc.y.buffer[0], key1->publicArea.unique.ecc.y.size)
+            != 0)
+            return false;
+        else
+            return true;
+        break;
+
+    case TPM2_ALG_MLDSA:
+        if (key1->publicArea.unique.mldsa.size != key2->publicArea.unique.mldsa.size) {
+            return false;
+        }
+        if (memcmp(&key1->publicArea.unique.mldsa.buffer[0],
+                   &key2->publicArea.unique.mldsa.buffer[0],
+                   key1->publicArea.unique.mldsa.size)
+            != 0)
+            return false;
+        else
+            return true;
+        break;
+    case TPM2_ALG_MLKEM:
+        if (key1->publicArea.unique.mlkem.size != key2->publicArea.unique.mlkem.size) {
+            return false;
+        }
+        if (memcmp(&key1->publicArea.unique.mlkem.buffer[0],
+                   &key2->publicArea.unique.mlkem.buffer[0],
+                   key1->publicArea.unique.mlkem.size)
             != 0)
             return false;
         else

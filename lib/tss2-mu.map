@@ -284,6 +284,26 @@
         Tss2_MU_TPM2_NT_Unmarshal;
         Tss2_MU_TPMI_ALG_HASH_Marshal;
         Tss2_MU_TPMI_ALG_HASH_Unmarshal;
+        Tss2_MU_TPM2B_MLKEM_PUBLIC_KEY_Marshal;
+        Tss2_MU_TPM2B_MLKEM_PUBLIC_KEY_Unmarshal;
+        Tss2_MU_TPM2B_MLKEM_PRIVATE_KEY_Marshal;
+        Tss2_MU_TPM2B_MLKEM_PRIVATE_KEY_Unmarshal;
+        Tss2_MU_TPM2B_MLKEM_CIPHERTEXT_Marshal;
+        Tss2_MU_TPM2B_MLKEM_CIPHERTEXT_Unmarshal;
+        Tss2_MU_TPM2B_MLDSA_PUBLIC_KEY_Marshal;
+        Tss2_MU_TPM2B_MLDSA_PUBLIC_KEY_Unmarshal;
+        Tss2_MU_TPM2B_MLDSA_PRIVATE_KEY_Marshal;
+        Tss2_MU_TPM2B_MLDSA_PRIVATE_KEY_Unmarshal;
+        Tss2_MU_TPM2B_MLDSA_SIGNATURE_Marshal;
+        Tss2_MU_TPM2B_MLDSA_SIGNATURE_Unmarshal;
+        Tss2_MU_TPMS_ML_PARAMETER_SET_Marshal;
+        Tss2_MU_TPMS_ML_PARAMETER_SET_Unmarshal;
+        Tss2_MU_TPMS_MLKEM_PARMS_Marshal;
+        Tss2_MU_TPMS_MLKEM_PARMS_Unmarshal;
+        Tss2_MU_TPMS_MLDSA_PARMS_Marshal;
+        Tss2_MU_TPMS_MLDSA_PARMS_Unmarshal;
+        Tss2_MU_TPMS_SIGNATURE_MLDSA_Marshal;
+        Tss2_MU_TPMS_SIGNATURE_MLDSA_Unmarshal;
     local:
         *;
 };
